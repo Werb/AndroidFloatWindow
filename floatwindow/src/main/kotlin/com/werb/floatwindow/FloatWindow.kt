@@ -1,6 +1,7 @@
 package com.werb.floatwindow
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 
@@ -24,9 +25,9 @@ object FloatWindow {
         get(tag)?.dismiss()
     }
 
-    fun destory(tag: String = FloatData.float_default_tag) {
+    fun destroy(tag: String = FloatData.float_default_tag) {
         if (floatWindowMap.containsKey(tag)) {
-            floatWindowMap[tag]?.destory()
+            floatWindowMap[tag]?.destroy()
             floatWindowMap.remove(tag)
         }
     }
@@ -58,6 +59,11 @@ object FloatWindow {
             return this
         }
 
+        fun setGravity(gravity: Int): Builder {
+            floatData.gravity = gravity
+            return this
+        }
+
         fun setTag(tag: String): Builder {
             floatData.tag = tag
             return this
@@ -68,9 +74,9 @@ object FloatWindow {
                 throw IllegalArgumentException("View has not been set!")
             }
             val floatView = FloatViewImpl(context).apply {
-                floatData.view?.let {
-                    setView(it)
-                }
+                this.setView(floatData.view ?: return@apply)
+                this.setSize(floatData.width, floatData.height)
+                this.setOffset(floatData.xOffset, floatData.yOffset)
             }
             floatWindowMap[floatData.tag] = floatView
             return floatView

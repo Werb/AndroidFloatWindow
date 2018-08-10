@@ -15,13 +15,15 @@ interface FloatView {
 
     fun setOffset(xOffset: Int, yOffset: Int)
 
+    fun setGravity(gravity: Int)
+
     fun initUI()
 
     fun dismiss()
 
     fun show()
 
-    fun destory()
+    fun destroy()
 
     fun updateXY(x: Int, y: Int)
 

@@ -3,6 +3,7 @@ package com.werb.androidfloatwindow
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import com.werb.floatwindow.FloatWindow
@@ -25,8 +26,9 @@ open class BaseActivity: AppCompatActivity() {
             .setView(ImageView(this).apply {
                 setImageResource(R.mipmap.ic_launcher)
             })
-            .setSize(100, 100)
-            .setOffset(20, 20)
+            .setSize(200, 200)
+            .setOffset(0, 0)
+            .setGravity(Gravity.BOTTOM and Gravity.START)
             .build()
     }
 

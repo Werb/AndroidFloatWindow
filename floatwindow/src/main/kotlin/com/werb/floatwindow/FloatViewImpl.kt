@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
@@ -17,7 +18,7 @@ import android.widget.FrameLayout
 internal class FloatViewImpl : FrameLayout, FloatView {
 
     private lateinit var floatView: View
-    private val floatLayoutParams: MarginLayoutParams by lazy { MarginLayoutParams(MarginLayoutParams.MATCH_PARENT, MarginLayoutParams.MATCH_PARENT) }
+    private val floatLayoutParams: FrameLayout.LayoutParams by lazy { FrameLayout.LayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT) }
     private var mX: Int = 0
     private var mY: Int = 0
     private var downX: Float = 0f
@@ -46,6 +47,10 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     override fun setOffset(xOffset: Int, yOffset: Int) {
         floatLayoutParams.leftMargin = xOffset
         floatLayoutParams.bottomMargin = yOffset
+    }
+
+    override fun setGravity(gravity: Int) {
+        floatLayoutParams.gravity = Gravity.CENTER
     }
 
     override fun initUI() {
@@ -110,7 +115,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         show = true
     }
 
-    override fun destory() {
+    override fun destroy() {
         removeView(floatView)
     }
 
