@@ -76,6 +76,7 @@ object FloatWindow {
             val floatView = FloatViewImpl(context).apply {
                 this.setView(floatData.view ?: return@apply)
                 this.setSize(floatData.width, floatData.height)
+                this.setGravity(floatData.gravity ?: Gravity.BOTTOM or Gravity.START)
                 this.setOffset(floatData.xOffset, floatData.yOffset)
             }
             floatWindowMap[floatData.tag] = floatView

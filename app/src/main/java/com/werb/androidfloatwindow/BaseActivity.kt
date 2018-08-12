@@ -28,7 +28,7 @@ open class BaseActivity: AppCompatActivity() {
             })
             .setSize(200, 200)
             .setOffset(0, 0)
-            .setGravity(Gravity.BOTTOM and Gravity.START)
+            .setGravity(Gravity.BOTTOM or Gravity.END)
             .build()
     }
 

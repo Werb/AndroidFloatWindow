@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -17,8 +18,12 @@ import android.widget.FrameLayout
  */
 internal class FloatViewImpl : FrameLayout, FloatView {
 
+    /** float view */
     private lateinit var floatView: View
     private val floatLayoutParams: FrameLayout.LayoutParams by lazy { FrameLayout.LayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT) }
+    private var gravity = Gravity.BOTTOM or Gravity.START
+    private var floatPosition = FloatPosition.BOTTOM_START
+
     private var mX: Int = 0
     private var mY: Int = 0
     private var downX: Float = 0f
@@ -35,6 +40,10 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    init {
+        setBackgroundColor(Color.RED)
+    }
+
     override fun setSize(width: Int, height: Int) {
         floatLayoutParams.width = width
         floatLayoutParams.height = height
@@ -45,23 +54,43 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     }
 
     override fun setOffset(xOffset: Int, yOffset: Int) {
-        floatLayoutParams.leftMargin = xOffset
-        floatLayoutParams.bottomMargin = yOffset
+        updateOffset(xOffset, yOffset)
     }
 
     override fun setGravity(gravity: Int) {
-        floatLayoutParams.gravity = Gravity.CENTER
+        floatPosition = when (gravity) {
+            Gravity.TOP or Gravity.START -> {
+                this.gravity = gravity
+                FloatPosition.TOP_START
+            }
+            Gravity.TOP or Gravity.END -> {
+                this.gravity = gravity
+                FloatPosition.TOP_END
+            }
+            Gravity.BOTTOM or Gravity.START -> {
+                this.gravity = gravity
+                FloatPosition.BOTTOM_START
+            }
+            Gravity.BOTTOM or Gravity.END -> {
+                this.gravity = gravity
+                FloatPosition.BOTTOM_END
+            }
+            else -> {
+                FloatPosition.BOTTOM_START
+            }
+        }
     }
 
     override fun initUI() {
+        // add view in parent
         addView(floatView, floatLayoutParams)
+        floatLayoutParams.gravity = gravity
+
         floatView.visibility = View.GONE
         var lastX = 0f
         var lastY = 0f
         var changeX: Float
         var changeY: Float
-        var newX: Float
-        var newY: Float
         floatView.setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -74,11 +103,22 @@ internal class FloatViewImpl : FrameLayout, FloatView {
                 MotionEvent.ACTION_MOVE -> {
                     changeX = event.rawX - lastX
                     changeY = event.rawY - lastY
-                    newX = mX + changeX
-                    newY = mY - changeY
                     lastX = event.rawX
                     lastY = event.rawY
-                    updateXY(newX.toInt(), newY.toInt())
+                    when (floatPosition) {
+                        FloatPosition.TOP_START -> {
+                            updateXY((mX + changeX).toInt(), (mY + changeY).toInt())
+                        }
+                        FloatPosition.TOP_END -> {
+                            updateXY((mX - changeX).toInt(), (mY + changeY).toInt())
+                        }
+                        FloatPosition.BOTTOM_START -> {
+                            updateXY((mX + changeX).toInt(), (mY - changeY).toInt())
+                        }
+                        FloatPosition.BOTTOM_END -> {
+                            updateXY((mX - changeX).toInt(), (mY - changeY).toInt())
+                        }
+                    }
                 }
                 MotionEvent.ACTION_UP -> {
                     upX = event.rawX
@@ -122,25 +162,19 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     override fun updateXY(x: Int, y: Int) {
         mX = x
         mY = y
-        floatLayoutParams.leftMargin = mX
-        floatLayoutParams.bottomMargin = mY
-        floatView.layoutParams = floatLayoutParams
+        updateOffset(mX, mY)
         moveBlock?.invoke(mX, mY)
     }
 
     override fun updateX(x: Int) {
         mX = x
-        floatLayoutParams.leftMargin = mX
-        floatLayoutParams.bottomMargin = mY
-        floatView.layoutParams = floatLayoutParams
+        updateOffset(mX, mY)
         moveBlock?.invoke(mX, mY)
     }
 
     override fun updateY(y: Int) {
         mY = y
-        floatLayoutParams.leftMargin = mX
-        floatLayoutParams.bottomMargin = mY
-        floatView.layoutParams = floatLayoutParams
+        updateOffset(mX, mY)
         moveBlock?.invoke(mX, mY)
     }
 
@@ -150,6 +184,28 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun addMoveListener(moveBlock: (Int, Int) -> Unit) {
         this.moveBlock = moveBlock
+    }
+
+    private fun updateOffset(xOffset: Int, yOffset: Int) {
+        when (floatPosition) {
+            FloatPosition.TOP_START -> {
+                floatLayoutParams.topMargin = yOffset
+                floatLayoutParams.leftMargin = xOffset
+            }
+            FloatPosition.TOP_END -> {
+                floatLayoutParams.topMargin = yOffset
+                floatLayoutParams.rightMargin = xOffset
+            }
+            FloatPosition.BOTTOM_START -> {
+                floatLayoutParams.bottomMargin = yOffset
+                floatLayoutParams.leftMargin = xOffset
+            }
+            FloatPosition.BOTTOM_END -> {
+                floatLayoutParams.bottomMargin = yOffset
+                floatLayoutParams.rightMargin = xOffset
+            }
+        }
+        floatView.layoutParams = floatLayoutParams
     }
 
     private fun startAnimator() {

@@ -12,14 +12,15 @@ import android.widget.FrameLayout
  * Created by wanbo on 2018/8/1.
  */
 
-fun Activity.addFloatWindow(view: View){
+/** add float window in android content layout */
+fun Activity.addFloatWindow(view: View) {
     val mDecorView = window.decorView as ViewGroup
     val mContentContainer = (mDecorView.getChildAt(0) as ViewGroup).findViewById<FrameLayout>(android.R.id.content)
     val layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     mContentContainer.addView(view, layoutParams)
 }
 
-val Context.widthPixels: Int
+internal val Context.widthPixels: Int
     get() {
         val displayMetrics = resources.displayMetrics
         val cf = resources.configuration
@@ -32,7 +33,7 @@ val Context.widthPixels: Int
         return 0
     }
 
-val Context.heightPixels: Int
+internal val Context.heightPixels: Int
     get() {
         val displayMetrics = resources.displayMetrics
         val cf = resources.configuration

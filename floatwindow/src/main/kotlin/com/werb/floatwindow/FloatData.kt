@@ -5,7 +5,7 @@ import android.view.View
 /**
  * Created by wanbo on 2018/8/1.
  */
-data class FloatData(var view: View? = null,
+internal data class FloatData(var view: View? = null,
                      var width: Int = 0,
                      var height: Int = 0,
                      var xOffset: Int = 0,
@@ -19,3 +19,5 @@ data class FloatData(var view: View? = null,
     }
 
 }
+
+enum class FloatPosition { TOP_START, TOP_END, BOTTOM_START, BOTTOM_END }
