@@ -124,6 +124,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
                     upX = event.rawX
                     upY = event.rawY
                     mClick = (Math.abs(upX - downX) > mSlop) || (Math.abs(upY - downY) > mSlop)
+                    // adsorb in left or right
                     val startX = mX
                     val endX = if (startX * 2 + view.width > context.widthPixels)
                         context.widthPixels - view.width
@@ -161,7 +162,10 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun updateXY(x: Int, y: Int) {
         mX = x
-        mY = y
+        // limit mY in parent height
+        if ( y in 0 .. this.height - floatView.height) {
+            mY = y
+        }
         updateOffset(mX, mY)
         moveBlock?.invoke(mX, mY)
     }
