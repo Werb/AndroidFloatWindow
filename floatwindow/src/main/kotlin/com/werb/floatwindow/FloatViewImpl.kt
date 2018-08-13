@@ -24,6 +24,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var gravity = Gravity.BOTTOM or Gravity.START
     private var floatPosition = FloatPosition.BOTTOM_START
 
+    /** touch config */
     private var mX: Int = 0
     private var mY: Int = 0
     private var downX: Float = 0f

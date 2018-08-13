@@ -73,6 +73,9 @@ object FloatWindow {
             if (floatData.view == null) {
                 throw IllegalArgumentException("View has not been set!")
             }
+            if (floatWindowMap.containsKey(floatData.tag)) {
+                throw IllegalArgumentException("FloatWindow of this tag has been added, Please set a new tag for the new FloatWindow")
+            }
             val floatView = FloatViewImpl(context).apply {
                 this.setView(floatData.view ?: return@apply)
                 this.setSize(floatData.width, floatData.height)
