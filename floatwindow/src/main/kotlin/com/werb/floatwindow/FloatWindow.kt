@@ -12,17 +12,18 @@ import android.view.View
 object FloatWindow {
 
     private val floatWindowMap: MutableMap<String, FloatViewImpl> by lazy { mutableMapOf<String, FloatViewImpl>() }
+    private val floatDataMap: MutableMap<String, FloatData> by lazy { mutableMapOf<String, FloatData>() }
 
-    private fun get(tag: String = FloatData.float_default_tag): FloatViewImpl? {
+    private fun getView(tag: String = FloatData.float_default_tag): FloatViewImpl? {
         return floatWindowMap[tag]
     }
 
     fun show(tag: String = FloatData.float_default_tag) {
-        get(tag)?.show()
+        getView(tag)?.show()
     }
 
     fun dismiss(tag: String = FloatData.float_default_tag) {
-        get(tag)?.dismiss()
+        getView(tag)?.dismiss()
     }
 
     fun destroy(tag: String = FloatData.float_default_tag) {
@@ -69,14 +70,18 @@ object FloatWindow {
             return this
         }
 
+        fun setMoveListener(moveListener: ((Int, Int) -> Unit)): Builder {
+            floatData.moveListener = moveListener
+            return this
+        }
+
         fun build(): View {
             if (floatData.view == null) {
                 throw IllegalArgumentException("View has not been set!")
             }
-            if (floatWindowMap.containsKey(floatData.tag)) {
-                throw IllegalArgumentException("FloatWindow of this tag has been added, Please set a new tag for the new FloatWindow")
-            }
+
             val floatView = FloatViewImpl(context).apply {
+                this.setTag(floatData.tag)
                 this.setView(floatData.view ?: return@apply)
                 this.setSize(floatData.width, floatData.height)
                 this.setGravity(floatData.gravity ?: Gravity.BOTTOM or Gravity.START)

@@ -23,6 +23,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private val floatLayoutParams: FrameLayout.LayoutParams by lazy { FrameLayout.LayoutParams(MarginLayoutParams.WRAP_CONTENT, MarginLayoutParams.WRAP_CONTENT) }
     private var gravity = Gravity.BOTTOM or Gravity.START
     private var floatPosition = FloatPosition.BOTTOM_START
+    private var tag = FloatData.float_default_tag
 
     /** touch config */
     private var mX: Int = 0
@@ -43,6 +44,10 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     init {
         setBackgroundColor(Color.RED)
+    }
+
+    override fun setTag(tag: String) {
+        this.tag = tag
     }
 
     override fun setSize(width: Int, height: Int) {
@@ -168,19 +173,16 @@ internal class FloatViewImpl : FrameLayout, FloatView {
             mY = y
         }
         updateOffset(mX, mY)
-        moveBlock?.invoke(mX, mY)
     }
 
     override fun updateX(x: Int) {
         mX = x
         updateOffset(mX, mY)
-        moveBlock?.invoke(mX, mY)
     }
 
     override fun updateY(y: Int) {
         mY = y
         updateOffset(mX, mY)
-        moveBlock?.invoke(mX, mY)
     }
 
     override fun getFloatViewX(): Int = mX
@@ -211,6 +213,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
             }
         }
         floatView.layoutParams = floatLayoutParams
+        moveBlock?.invoke(xOffset, yOffset)
     }
 
     private fun startAnimator() {

@@ -9,6 +9,8 @@ import android.view.View
 
 interface FloatView {
 
+    fun setTag(tag: String)
+
     fun setSize(width: Int, height: Int)
 
     fun setView(view: View)
