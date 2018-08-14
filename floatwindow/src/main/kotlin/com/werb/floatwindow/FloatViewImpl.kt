@@ -26,8 +26,6 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var tag = FloatData.float_default_tag
 
     /** touch config */
-    private var mX: Int = 0
-    private var mY: Int = 0
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var upX: Float = 0f
@@ -38,13 +36,14 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var moveBlock: ((Int, Int) -> Unit)? = null
     private var show = false
 
+    companion object {
+        private var mX: Int = 0
+        private var mY: Int = 0
+    }
+
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
-
-    init {
-        setBackgroundColor(Color.RED)
-    }
 
     override fun setTag(tag: String) {
         this.tag = tag
@@ -158,6 +157,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         if (childCount == 0) {
             initUI()
         }
+        updateOffset(mX, mY)
         floatView.visibility = View.VISIBLE
         show = true
     }

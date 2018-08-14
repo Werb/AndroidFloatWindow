@@ -6,23 +6,17 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import com.werb.floatwindow.FloatWindow
-import com.werb.floatwindow.addFloatWindow
+import com.werb.floatwindow.*
 
 
 /**
  * Created by wanbo on 2018/7/31.
  */
 @SuppressLint("Registered")
-open class BaseActivity: AppCompatActivity() {
+open class BaseActivity : AppCompatActivity() {
 
-    private var floatView_A: View? = null
-    private val floatView_2: View? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        floatView_A = FloatWindow.Builder(this.applicationContext)
+    private val floatView: View by lazy {
+        FloatWindow.Builder(this.applicationContext)
             .setView(ImageView(this).apply {
                 setImageResource(R.mipmap.ic_launcher)
             })
@@ -32,15 +26,9 @@ open class BaseActivity: AppCompatActivity() {
             .build()
     }
 
-    override fun onPostResume() {
-        super.onPostResume()
-        FloatWindow.show()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        lifecycle.addObserver(FloatWindowObserver(this, floatView))
     }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        addFloatWindow(floatView_A ?: return)
-    }
-
 
 }
