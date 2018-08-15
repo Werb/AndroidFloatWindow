@@ -26,6 +26,8 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var tag = FloatData.float_default_tag
 
     /** touch config */
+    private var mX: Int = 0
+    private var mY: Int = 0
     private var downX: Float = 0f
     private var downY: Float = 0f
     private var upX: Float = 0f
@@ -33,20 +35,19 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var mClick = false
     private var mAnimator: ValueAnimator? = null
     private val mSlop: Int = ViewConfiguration.get(context.applicationContext).scaledTouchSlop
-    private var moveBlock: ((Int, Int) -> Unit)? = null
+    private var moveBlock: ((String, Int, Int) -> Unit)? = null
     private var show = false
-
-    companion object {
-        private var mX: Int = 0
-        private var mY: Int = 0
-    }
 
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    override fun setTag(tag: String) {
+    override fun setFloatTag(tag: String) {
         this.tag = tag
+    }
+
+    override fun getFloatTag(): String {
+        return tag
     }
 
     override fun setSize(width: Int, height: Int) {
@@ -157,7 +158,12 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         if (childCount == 0) {
             initUI()
         }
-        updateOffset(mX, mY)
+        // sync position
+        FloatWindow.floatXYmap[tag]?.apply {
+            updateOffset(this.x, this.y)
+            mX = this.x
+            mY = this.y
+        }
         floatView.visibility = View.VISIBLE
         show = true
     }
@@ -169,7 +175,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     override fun updateXY(x: Int, y: Int) {
         mX = x
         // limit mY in parent height
-        if ( y in 0 .. this.height - floatView.height) {
+        if (y in 0..this.height - floatView.height) {
             mY = y
         }
         updateOffset(mX, mY)
@@ -189,7 +195,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun getFloatViewY(): Int = mY
 
-    override fun addMoveListener(moveBlock: (Int, Int) -> Unit) {
+    override fun addMoveListener(moveBlock: (String, Int, Int) -> Unit) {
         this.moveBlock = moveBlock
     }
 
@@ -213,7 +219,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
             }
         }
         floatView.layoutParams = floatLayoutParams
-        moveBlock?.invoke(xOffset, yOffset)
+        moveBlock?.invoke(tag, xOffset, yOffset)
     }
 
     private fun startAnimator() {

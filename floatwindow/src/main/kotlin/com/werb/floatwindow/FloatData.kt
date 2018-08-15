@@ -20,4 +20,6 @@ internal data class FloatData(var view: View? = null,
 
 }
 
+internal data class FloatXY(var x: Int, var y: Int)
+
 enum class FloatPosition { TOP_START, TOP_END, BOTTOM_START, BOTTOM_END }

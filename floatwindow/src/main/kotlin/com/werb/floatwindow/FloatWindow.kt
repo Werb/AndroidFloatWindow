@@ -1,6 +1,7 @@
 package com.werb.floatwindow
 
 import android.content.Context
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,8 @@ import android.view.View
  * Created by wanbo on 2018/8/1.
  */
 object FloatWindow {
+
+    internal val floatXYmap = mutableMapOf<String, FloatXY>()
 
     class Builder(private val context: Context) {
 
@@ -47,7 +50,7 @@ object FloatWindow {
             return this
         }
 
-        fun setMoveListener(moveListener: ((Int, Int) -> Unit)): Builder {
+        fun setMoveListener(moveListener: ((x: Int, y: Int) -> Unit)): Builder {
             floatData.moveListener = moveListener
             return this
         }
@@ -57,12 +60,22 @@ object FloatWindow {
                 throw IllegalArgumentException("View has not been set!")
             }
 
+            if (!floatXYmap.containsKey(floatData.tag)) {
+                floatXYmap[floatData.tag] = FloatXY(0, 0)
+            }
+
             return FloatViewImpl(context).apply {
-                this.setTag(floatData.tag)
+                this.setFloatTag(floatData.tag)
                 this.setView(floatData.view ?: return@apply)
                 this.setSize(floatData.width, floatData.height)
                 this.setGravity(floatData.gravity ?: Gravity.BOTTOM or Gravity.START)
                 this.setOffset(floatData.xOffset, floatData.yOffset)
+                this.addMoveListener { tag, x, y ->
+                    floatXYmap[tag]?.apply {
+                        this.x = x
+                        this.y = y
+                    }
+                }
             }
         }
 

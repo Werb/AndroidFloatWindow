@@ -9,7 +9,9 @@ import android.view.View
 
 interface FloatView {
 
-    fun setTag(tag: String)
+    fun setFloatTag(tag: String)
+
+    fun getFloatTag(): String
 
     fun setSize(width: Int, height: Int)
 
@@ -37,6 +39,6 @@ interface FloatView {
 
     fun getFloatViewY(): Int
 
-    fun addMoveListener(moveBlock: (Int, Int) -> Unit)
+    fun addMoveListener(moveBlock: (String, Int, Int) -> Unit)
 
 }

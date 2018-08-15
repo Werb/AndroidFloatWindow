@@ -23,12 +23,30 @@ open class BaseActivity : AppCompatActivity() {
             .setSize(200, 200)
             .setOffset(0, 0)
             .setGravity(Gravity.BOTTOM or Gravity.END)
+            .setMoveListener { x, y ->
+
+            }
+            .build()
+    }
+
+    private val floatView2: View by lazy {
+        FloatWindow.Builder(this.applicationContext)
+            .setView(ImageView(this).apply {
+                setImageResource(R.mipmap.ic_launcher)
+            })
+            .setSize(200, 200)
+            .setOffset(0, 0)
+            .setGravity(Gravity.TOP or Gravity.START)
+            .setTag("111")
+            .setMoveListener { x, y ->
+
+            }
             .build()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(FloatWindowObserver(this, floatView))
+        lifecycle.addObserver(FloatWindowObserver(this, floatView, floatView2))
     }
 
 }
