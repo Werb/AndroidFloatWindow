@@ -74,6 +74,7 @@ object FloatWindow {
                     floatXYmap[tag]?.apply {
                         this.x = x
                         this.y = y
+                        floatData.moveListener?.invoke(x, y)
                     }
                 }
             }

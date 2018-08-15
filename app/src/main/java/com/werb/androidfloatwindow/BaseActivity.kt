@@ -24,7 +24,7 @@ open class BaseActivity : AppCompatActivity() {
             .setOffset(0, 0)
             .setGravity(Gravity.BOTTOM or Gravity.END)
             .setMoveListener { x, y ->
-
+                println("floatView1:$x----$y")
             }
             .build()
     }
@@ -39,7 +39,7 @@ open class BaseActivity : AppCompatActivity() {
             .setGravity(Gravity.TOP or Gravity.START)
             .setTag("111")
             .setMoveListener { x, y ->
-
+                println("floatView2:$x----$y")
             }
             .build()
     }
