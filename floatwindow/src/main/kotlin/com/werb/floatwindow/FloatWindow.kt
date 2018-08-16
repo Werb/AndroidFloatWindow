@@ -1,10 +1,11 @@
 package com.werb.floatwindow
 
+import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import java.lang.ref.WeakReference
 
 
 /**
@@ -12,7 +13,37 @@ import android.view.View
  */
 object FloatWindow {
 
-    internal val floatXYmap = mutableMapOf<String, FloatXY>()
+    internal val float_xy_map = mutableMapOf<String, FloatXY>()
+    internal val float_show_map = mutableMapOf<String, Boolean>()
+
+    fun show(activity: Activity, tag: String = FloatData.float_default_tag) {
+        val act = WeakReference<Activity>(activity).get()
+        act?.apply {
+            val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
+            floatViewImpl?.show()
+            float_show_map[tag] = true
+        }
+    }
+
+    fun dismiss(activity: Activity, tag: String = FloatData.float_default_tag) {
+        val act = WeakReference<Activity>(activity).get()
+        act?.apply {
+            val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
+            floatViewImpl?.dismiss()
+            float_show_map[tag] = false
+        }
+    }
+
+    fun destroy(activity: Activity, tag: String = FloatData.float_default_tag) {
+        val act = WeakReference<Activity>(activity).get()
+        act?.apply {
+            val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
+            floatViewImpl?.dismiss()
+            floatViewImpl?.destroy()
+            float_show_map[tag] = false
+            float_xy_map[tag] = FloatXY(0,0)
+        }
+    }
 
     class Builder(private val context: Context) {
 
@@ -55,13 +86,19 @@ object FloatWindow {
             return this
         }
 
+        fun setAutoShow(autoShow: Boolean): Builder {
+            floatData.autoShow = autoShow
+            return this
+        }
+
         fun build(): View {
             if (floatData.view == null) {
                 throw IllegalArgumentException("View has not been set!")
             }
 
-            if (!floatXYmap.containsKey(floatData.tag)) {
-                floatXYmap[floatData.tag] = FloatXY(0, 0)
+            if (!float_xy_map.containsKey(floatData.tag)) {
+                float_xy_map[floatData.tag] = FloatXY(0, 0)
+                float_show_map[floatData.tag] = floatData.autoShow
             }
 
             return FloatViewImpl(context).apply {
@@ -71,7 +108,7 @@ object FloatWindow {
                 this.setGravity(floatData.gravity ?: Gravity.BOTTOM or Gravity.START)
                 this.setOffset(floatData.xOffset, floatData.yOffset)
                 this.addMoveListener { tag, x, y ->
-                    floatXYmap[tag]?.apply {
+                    float_xy_map[tag]?.apply {
                         this.x = x
                         this.y = y
                         floatData.moveListener?.invoke(x, y)

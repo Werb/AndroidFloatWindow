@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -44,6 +43,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun setFloatTag(tag: String) {
         this.tag = tag
+        this.id = tag.hashCode()
     }
 
     override fun getFloatTag(): String {
@@ -159,7 +159,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
             initUI()
         }
         // sync position
-        FloatWindow.floatXYmap[tag]?.apply {
+        FloatWindow.float_xy_map[tag]?.apply {
             updateOffset(this.x, this.y)
             mX = this.x
             mY = this.y

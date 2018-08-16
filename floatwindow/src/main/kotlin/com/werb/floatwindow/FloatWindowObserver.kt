@@ -34,9 +34,15 @@ class FloatWindowObserver(private val activity: Activity, private vararg val vie
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     private fun show() {
-        views.forEach {
-            if (it is FloatViewImpl) {
-                it.show()
+        views.forEach { view ->
+            if (view is FloatViewImpl) {
+                FloatWindow.float_show_map[view.getFloatTag()]?.let {
+                    if (it) {
+                        view.show()
+                    } else {
+                        view.dismiss()
+                    }
+                }
             }
         }
     }
