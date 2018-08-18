@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Gravity
@@ -23,6 +24,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var gravity = Gravity.BOTTOM or Gravity.START
     private var floatPosition = FloatPosition.BOTTOM_START
     private var tag = FloatData.float_default_tag
+    private var filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>> = mutableMapOf()
 
     /** touch config */
     private var mX: Int = 0
@@ -61,6 +63,10 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun setOffset(xOffset: Int, yOffset: Int) {
         updateOffset(xOffset, yOffset)
+    }
+
+    override fun setFilterActivity(filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>>) {
+        this.filterActivities = filterActivities
     }
 
     override fun setGravity(gravity: Int) {
@@ -149,12 +155,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         }
     }
 
-    override fun dismiss() {
-        floatView.visibility = View.GONE
-        show = false
-    }
-
-    override fun show() {
+    private fun showFloat() {
         if (childCount == 0) {
             initUI()
         }
@@ -166,6 +167,38 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         }
         floatView.visibility = View.VISIBLE
         show = true
+    }
+
+    override fun dismiss() {
+        floatView.visibility = View.GONE
+        show = false
+    }
+
+    override fun show() {
+        // filter activity show
+        if (filterActivities.isNotEmpty()) {
+            filterActivities.forEach { show, arrayOfClass ->
+                if (show) {
+                    if (context is Activity) {
+                        arrayOfClass.forEach {
+                            if (context::class.java.simpleName == it.simpleName || it.isAssignableFrom(context::class.java)) {
+                                showFloat()
+                            }
+                        }
+                    }
+                } else {
+                    if (context is Activity) {
+                        arrayOfClass.forEach {
+                            if (context::class.java.simpleName != it.simpleName && !it.isAssignableFrom(context::class.java)) {
+                                showFloat()
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            showFloat()
+        }
     }
 
     override fun destroy() {

@@ -41,11 +41,11 @@ object FloatWindow {
             floatViewImpl?.dismiss()
             floatViewImpl?.destroy()
             float_show_map[tag] = false
-            float_xy_map[tag] = FloatXY(0,0)
+            float_xy_map[tag] = FloatXY(0, 0)
         }
     }
 
-    class Builder(private val context: Context) {
+    class Builder(private val activity: Activity) {
 
         private val floatData: FloatData = FloatData()
 
@@ -55,7 +55,7 @@ object FloatWindow {
         }
 
         fun setView(layoutId: Int): Builder {
-            floatData.view = LayoutInflater.from(context).inflate(layoutId, null)
+            floatData.view = LayoutInflater.from(activity).inflate(layoutId, null)
             return this
         }
 
@@ -91,6 +91,11 @@ object FloatWindow {
             return this
         }
 
+        fun setActivityFilter(show: Boolean, vararg activities: Class<out Activity>): Builder {
+            floatData.filterActivities[show] = activities
+            return this
+        }
+
         fun build(): View {
             if (floatData.view == null) {
                 throw IllegalArgumentException("View has not been set!")
@@ -101,12 +106,13 @@ object FloatWindow {
                 float_show_map[floatData.tag] = floatData.autoShow
             }
 
-            return FloatViewImpl(context).apply {
+            return FloatViewImpl(activity).apply {
                 this.setFloatTag(floatData.tag)
                 this.setView(floatData.view ?: return@apply)
                 this.setSize(floatData.width, floatData.height)
                 this.setGravity(floatData.gravity ?: Gravity.BOTTOM or Gravity.START)
                 this.setOffset(floatData.xOffset, floatData.yOffset)
+                this.setFilterActivity(floatData.filterActivities)
                 this.addMoveListener { tag, x, y ->
                     float_xy_map[tag]?.apply {
                         this.x = x

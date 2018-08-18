@@ -16,7 +16,7 @@ import com.werb.floatwindow.*
 open class BaseActivity : AppCompatActivity() {
 
     private val floatView: View by lazy {
-        FloatWindow.Builder(this.applicationContext)
+        FloatWindow.Builder(this)
             .setView(ImageView(this).apply {
                 setImageResource(R.mipmap.ic_launcher)
             })
@@ -30,7 +30,7 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     private val floatView2: View by lazy {
-        FloatWindow.Builder(this.applicationContext)
+        FloatWindow.Builder(this)
             .setView(ImageView(this).apply {
                 setImageResource(R.mipmap.ic_launcher)
             })

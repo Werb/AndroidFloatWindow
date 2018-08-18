@@ -1,5 +1,6 @@
 package com.werb.floatwindow
 
+import android.app.Activity
 import android.view.View
 
 /**
@@ -40,5 +41,7 @@ interface FloatView {
     fun getFloatViewY(): Int
 
     fun addMoveListener(moveBlock: (String, Int, Int) -> Unit)
+
+    fun setFilterActivity(filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>>)
 
 }

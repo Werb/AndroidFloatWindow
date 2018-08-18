@@ -1,5 +1,6 @@
 package com.werb.floatwindow
 
+import android.app.Activity
 import android.view.View
 
 /**
@@ -13,7 +14,8 @@ internal data class FloatData(var view: View? = null,
                               var moveListener: ((Int, Int) -> Unit)? = null,
                               var gravity: Int? = null,
                               var tag: String = float_default_tag,
-                              var autoShow: Boolean = false) {
+                              var autoShow: Boolean = false,
+                              var filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>> = mutableMapOf()) {
 
     companion object {
         const val float_default_tag = "float_window_tag"
