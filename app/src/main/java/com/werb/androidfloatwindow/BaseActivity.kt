@@ -17,12 +17,10 @@ open class BaseActivity : AppCompatActivity() {
 
     private val floatView: View by lazy {
         FloatWindow.Builder(this)
-            .setView(ImageView(this).apply {
-                setImageResource(R.mipmap.ic_launcher)
-            })
+            .setView(RotateView(this))
             .setSize(200, 200)
-            .setOffset(0, 0)
-            .setGravity(Gravity.BOTTOM or Gravity.END)
+            .setOffset(200, 200)
+            .setGravity(Gravity.BOTTOM or Gravity.START)
             .setMoveListener { x, y ->
                 println("floatView1:$x----$y")
             }

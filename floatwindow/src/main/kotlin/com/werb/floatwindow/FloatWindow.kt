@@ -15,6 +15,7 @@ object FloatWindow {
 
     internal val float_xy_map = mutableMapOf<String, FloatXY>()
     internal val float_show_map = mutableMapOf<String, Boolean>()
+    internal val float_data_map = mutableMapOf<String, FloatData>()
 
     fun show(activity: Activity, tag: String = FloatData.float_default_tag) {
         val act = WeakReference<Activity>(activity).get()
@@ -41,7 +42,7 @@ object FloatWindow {
             floatViewImpl?.dismiss()
             floatViewImpl?.destroy()
             float_show_map[tag] = false
-            float_xy_map[tag] = FloatXY(0, 0)
+            float_xy_map[tag] = FloatXY(float_data_map[tag]?.xOffset ?: 0, float_data_map[tag]?.yOffset ?: 0)
         }
     }
 
@@ -102,7 +103,8 @@ object FloatWindow {
             }
 
             if (!float_xy_map.containsKey(floatData.tag)) {
-                float_xy_map[floatData.tag] = FloatXY(0, 0)
+                float_data_map[floatData.tag] = floatData
+                float_xy_map[floatData.tag] = FloatXY(floatData.xOffset, floatData.yOffset)
                 float_show_map[floatData.tag] = floatData.autoShow
             }
 
