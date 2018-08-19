@@ -7,10 +7,7 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewConfiguration
+import android.view.*
 import android.widget.FrameLayout
 
 /**
@@ -97,14 +94,19 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         // add view in parent
         addView(floatView, floatLayoutParams)
         floatLayoutParams.gravity = gravity
-
         floatView.visibility = View.GONE
+        floatView.setOnTouchListener(touchListener)
+    }
+
+    private val touchListener = object : View.OnTouchListener {
+
         var lastX = 0f
         var lastY = 0f
-        var changeX: Float
-        var changeY: Float
-        floatView.setOnTouchListener { view, event ->
-            when (event.action) {
+        var changeX = 0f
+        var changeY = 0f
+
+        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+            when (event?.action) {
                 MotionEvent.ACTION_DOWN -> {
                     downX = event.rawX
                     downY = event.rawY
@@ -138,8 +140,8 @@ internal class FloatViewImpl : FrameLayout, FloatView {
                     mClick = (Math.abs(upX - downX) > mSlop) || (Math.abs(upY - downY) > mSlop)
                     // adsorb in left or right
                     val startX = mX
-                    val endX = if (startX * 2 + view.width > context.widthPixels)
-                        context.widthPixels - view.width
+                    val endX = if (startX * 2 + floatView.width > context.widthPixels)
+                        context.widthPixels - floatView.width
                     else
                         0
                     mAnimator = ObjectAnimator.ofInt(startX, endX)
@@ -151,8 +153,13 @@ internal class FloatViewImpl : FrameLayout, FloatView {
                 }
             }
 
-            return@setOnTouchListener true
+            return if (floatView is ViewGroup) {
+                mClick
+            } else {
+                true
+            }
         }
+
     }
 
     private fun showFloat() {

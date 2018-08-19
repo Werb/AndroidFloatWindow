@@ -21,6 +21,7 @@ open class BaseActivity : AppCompatActivity() {
             .setSize(200, 200)
             .setOffset(200, 200)
             .setGravity(Gravity.BOTTOM or Gravity.START)
+            .setAutoShow(true)
             .setMoveListener { x, y ->
                 println("floatView1:$x----$y")
             }
@@ -36,6 +37,7 @@ open class BaseActivity : AppCompatActivity() {
             .setOffset(0, 0)
             .setGravity(Gravity.TOP or Gravity.START)
             .setTag("111")
+            .setAutoShow(true)
             .setMoveListener { x, y ->
                 println("floatView2:$x----$y")
             }

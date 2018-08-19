@@ -3,9 +3,9 @@ package com.werb.androidfloatwindow
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import android.view.animation.LinearInterpolator
 import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.layout_rotate_view.view.*
 
@@ -27,9 +27,6 @@ class RotateView: FrameLayout {
             this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.rotate).also {
                 it.interpolator = LinearInterpolator()
             })
-            setOnClickListener {
-                Toast.makeText(context, "Jay Chou is my favorite singer", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
