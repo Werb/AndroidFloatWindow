@@ -3,10 +3,15 @@ package com.werb.floatwindow
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.R.attr.x
+import android.R.attr.y
+
+
 
 /**
  * Created by wanbo on 2018/8/1.
@@ -45,3 +50,17 @@ internal val Context.heightPixels: Int
         }
         return 0
     }
+
+internal fun View.isInViewArea(x: Float, y: Float): Boolean {
+    val location = IntArray(2)
+    getLocationOnScreen(location)
+
+    val left = location[0]
+    val top = location[1]
+
+    val right = left + measuredWidth
+    val bottom = top + measuredHeight
+
+    return y >= top && y <= bottom && x >= left && x <= right
+
+}

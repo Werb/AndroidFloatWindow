@@ -7,8 +7,12 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.util.AttributeSet
-import android.view.*
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewConfiguration
 import android.widget.FrameLayout
+
 
 /**
  * Created by wanbo on 2018/8/1.
@@ -28,9 +32,12 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var mY: Int = 0
     private var downX: Float = 0f
     private var downY: Float = 0f
-    private var upX: Float = 0f
-    private var upY: Float = 0f
-    private var mClick = false
+    private var moveX: Float = 0f
+    private var moveY: Float = 0f
+    private var lastX = 0f
+    private var lastY = 0f
+    private var changeX = 0f
+    private var changeY = 0f
     private var mAnimator: ValueAnimator? = null
     private val mSlop: Int = ViewConfiguration.get(context.applicationContext).scaledTouchSlop
     private var moveBlock: ((String, Int, Int) -> Unit)? = null
@@ -95,71 +102,49 @@ internal class FloatViewImpl : FrameLayout, FloatView {
         addView(floatView, floatLayoutParams)
         floatLayoutParams.gravity = gravity
         floatView.visibility = View.GONE
-        floatView.setOnTouchListener(touchListener)
     }
 
-    private val touchListener = object : View.OnTouchListener {
-
-        var lastX = 0f
-        var lastY = 0f
-        var changeX = 0f
-        var changeY = 0f
-
-        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-            when (event?.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    downX = event.rawX
-                    downY = event.rawY
-                    lastX = event.rawX
-                    lastY = event.rawY
-                    cancelAnimator()
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    changeX = event.rawX - lastX
-                    changeY = event.rawY - lastY
-                    lastX = event.rawX
-                    lastY = event.rawY
-                    when (floatPosition) {
-                        FloatPosition.TOP_START -> {
-                            updateXY((mX + changeX).toInt(), (mY + changeY).toInt())
-                        }
-                        FloatPosition.TOP_END -> {
-                            updateXY((mX - changeX).toInt(), (mY + changeY).toInt())
-                        }
-                        FloatPosition.BOTTOM_START -> {
-                            updateXY((mX + changeX).toInt(), (mY - changeY).toInt())
-                        }
-                        FloatPosition.BOTTOM_END -> {
-                            updateXY((mX - changeX).toInt(), (mY - changeY).toInt())
-                        }
-                    }
-                }
-                MotionEvent.ACTION_UP -> {
-                    upX = event.rawX
-                    upY = event.rawY
-                    mClick = (Math.abs(upX - downX) > mSlop) || (Math.abs(upY - downY) > mSlop)
-                    // adsorb in left or right
-                    val startX = mX
-                    val endX = if (startX * 2 + floatView.width > context.widthPixels)
-                        context.widthPixels - floatView.width
-                    else
-                        0
-                    mAnimator = ObjectAnimator.ofInt(startX, endX)
-                    mAnimator?.addUpdateListener { animation ->
-                        val x = animation.animatedValue as Int
-                        updateX(x)
-                    }
-                    startAnimator()
-                }
-            }
-
-            return if (floatView is ViewGroup) {
-                mClick
-            } else {
-                true
-            }
+    override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
+        val action = event?.actionMasked
+        if (action == MotionEvent.ACTION_DOWN && event.edgeFlags != 0) {
+            return false
         }
 
+        val inViewArea = floatView.isInViewArea(event?.rawX ?: 0f, event?.rawY ?: 0f)
+        if (!inViewArea) {
+            return false
+        }
+
+        var isIntercept = false
+        when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                eventDown(event)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                moveX = event.rawX
+                moveY = event.rawY
+                isIntercept = ((Math.abs(moveX - downX) > mSlop) || (Math.abs(moveY - downY) > mSlop))
+                if (isIntercept) {
+                    eventMove(event)
+                }
+            }
+        }
+        return isIntercept
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        when (event?.action) {
+            MotionEvent.ACTION_DOWN -> {
+                eventDown(event)
+            }
+            MotionEvent.ACTION_MOVE -> {
+                eventMove(event)
+            }
+            MotionEvent.ACTION_UP -> {
+                eventUp(event)
+            }
+        }
+        return super.onTouchEvent(event)
     }
 
     private fun showFloat() {
@@ -237,6 +222,50 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun addMoveListener(moveBlock: (String, Int, Int) -> Unit) {
         this.moveBlock = moveBlock
+    }
+
+    private fun eventDown(event: MotionEvent) {
+        downX = event.rawX
+        downY = event.rawY
+        lastX = event.rawX
+        lastY = event.rawY
+        cancelAnimator()
+    }
+
+    private fun eventMove(event: MotionEvent) {
+        changeX = event.rawX - lastX
+        changeY = event.rawY - lastY
+        lastX = event.rawX
+        lastY = event.rawY
+        when (floatPosition) {
+            FloatPosition.TOP_START -> {
+                updateXY((mX + changeX).toInt(), (mY + changeY).toInt())
+            }
+            FloatPosition.TOP_END -> {
+                updateXY((mX - changeX).toInt(), (mY + changeY).toInt())
+            }
+            FloatPosition.BOTTOM_START -> {
+                updateXY((mX + changeX).toInt(), (mY - changeY).toInt())
+            }
+            FloatPosition.BOTTOM_END -> {
+                updateXY((mX - changeX).toInt(), (mY - changeY).toInt())
+            }
+        }
+    }
+
+    private fun eventUp(event: MotionEvent) {
+        // adsorb in left or right
+        val startX = mX
+        val endX = if (startX * 2 + floatView.width > context.widthPixels)
+            context.widthPixels - floatView.width
+        else
+            0
+        mAnimator = ObjectAnimator.ofInt(startX, endX)
+        mAnimator?.addUpdateListener { animation ->
+            val x = animation.animatedValue as Int
+            updateX(x)
+        }
+        startAnimator()
     }
 
     private fun updateOffset(xOffset: Int, yOffset: Int) {

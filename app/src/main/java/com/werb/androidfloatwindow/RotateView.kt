@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
 import android.view.animation.AnimationUtils
+import android.view.animation.Interpolator
 import android.widget.FrameLayout
 import android.widget.Toast
 import kotlinx.android.synthetic.main.layout_rotate_view.view.*
@@ -27,6 +28,9 @@ class RotateView: FrameLayout {
             this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.rotate).also {
                 it.interpolator = LinearInterpolator()
             })
+            this.setOnClickListener {
+                Toast.makeText(context, "RotateView click", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

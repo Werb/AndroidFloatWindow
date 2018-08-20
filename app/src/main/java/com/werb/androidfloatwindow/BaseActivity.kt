@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import com.werb.floatwindow.*
 
 
@@ -19,9 +20,8 @@ open class BaseActivity : AppCompatActivity() {
         FloatWindow.Builder(this)
             .setView(RotateView(this))
             .setSize(200, 200)
-            .setOffset(200, 200)
-            .setGravity(Gravity.BOTTOM or Gravity.START)
-            .setAutoShow(true)
+            .setOffset(0, 0)
+            .setGravity(Gravity.BOTTOM or Gravity.END)
             .setMoveListener { x, y ->
                 println("floatView1:$x----$y")
             }
@@ -32,6 +32,9 @@ open class BaseActivity : AppCompatActivity() {
         FloatWindow.Builder(this)
             .setView(ImageView(this).apply {
                 setImageResource(R.mipmap.ic_launcher)
+                setOnClickListener {
+                    Toast.makeText(this@BaseActivity, "image click", Toast.LENGTH_SHORT).show()
+                }
             })
             .setSize(200, 200)
             .setOffset(0, 0)
