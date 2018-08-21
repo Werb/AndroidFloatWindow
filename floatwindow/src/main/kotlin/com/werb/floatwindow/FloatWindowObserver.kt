@@ -37,10 +37,13 @@ class FloatWindowObserver(private val activity: Activity, private vararg val vie
         views.forEach { view ->
             if (view is FloatViewImpl) {
                 FloatWindow.float_show_map[view.getFloatTag()]?.let {
-                    if (it) {
+                    if (it.show) {
                         view.show()
                     } else {
                         view.dismiss()
+                        if (it.destroy) {
+                            view.destroy()
+                        }
                     }
                 }
             }

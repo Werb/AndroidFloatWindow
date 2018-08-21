@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.AppCompatImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/jay"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/jay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/jay"/>
-
-</FrameLayout>
+    android:layout_height="wrap_content"
+    android:background="@drawable/jay" />

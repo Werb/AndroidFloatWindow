@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference
 object FloatWindow {
 
     internal val float_xy_map = mutableMapOf<String, FloatXY>()
-    internal val float_show_map = mutableMapOf<String, Boolean>()
+    internal val float_show_map = mutableMapOf<String, FloatShow>()
     internal val float_data_map = mutableMapOf<String, FloatData>()
 
     fun show(activity: Activity, tag: String = FloatData.float_default_tag) {
@@ -22,7 +22,7 @@ object FloatWindow {
         act?.apply {
             val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
             floatViewImpl?.show()
-            float_show_map[tag] = true
+            float_show_map[tag] = FloatShow(true, false)
         }
     }
 
@@ -31,7 +31,7 @@ object FloatWindow {
         act?.apply {
             val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
             floatViewImpl?.dismiss()
-            float_show_map[tag] = false
+            float_show_map[tag] = FloatShow(false, false)
         }
     }
 
@@ -41,7 +41,7 @@ object FloatWindow {
             val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
             floatViewImpl?.dismiss()
             floatViewImpl?.destroy()
-            float_show_map[tag] = false
+            float_show_map[tag] = FloatShow(false, true)
             float_xy_map[tag] = FloatXY(float_data_map[tag]?.xOffset ?: 0, float_data_map[tag]?.yOffset ?: 0)
         }
     }
@@ -110,7 +110,7 @@ object FloatWindow {
             if (!float_xy_map.containsKey(floatData.tag)) {
                 float_data_map[floatData.tag] = floatData
                 float_xy_map[floatData.tag] = FloatXY(floatData.xOffset, floatData.yOffset)
-                float_show_map[floatData.tag] = floatData.autoShow
+                float_show_map[floatData.tag] = FloatShow(floatData.autoShow, false)
             }
 
             return FloatViewImpl(activity).apply {

@@ -49,7 +49,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(FloatWindowObserver(this, floatView, floatView2))
+        lifecycle.addObserver(FloatWindowObserver(this, floatView))
     }
 
 }

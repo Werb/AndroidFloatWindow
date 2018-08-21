@@ -16,6 +16,10 @@ class TwoActivity: BaseActivity() {
         button.setOnClickListener {
             FloatWindow.show(this)
         }
+
+        button2.setOnClickListener {
+            FloatWindow.destroy(this)
+        }
     }
 
 }
