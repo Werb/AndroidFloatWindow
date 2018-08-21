@@ -9,6 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.novoda:bintray-release:0.8.1'
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -18,7 +19,7 @@ buildscript {
     ext.versions = [
             applicationId    : "com.werb.androidfloatwindow",
             versionCode      : 1,
-            versionName      : "1.0.0",
+            versionName      : "0.1.0",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
             compileSdkVersion: 28,
@@ -26,7 +27,7 @@ buildscript {
 
     // lib version
     ext.lib = [
-            support_lib_version      : "28.0.0-beta01",
+            support_lib_version      : "28.0.0-rc01",
             constraint_layout_version: "1.1.2",
             test_runner_version      : "1.0.2"
     ]
@@ -42,3 +43,5 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+tasks.getByPath(":floatwindow:releaseAndroidJavadocs").enabled = false

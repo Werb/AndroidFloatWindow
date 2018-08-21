@@ -30,3 +30,13 @@ dependencies {
     api "com.android.support:appcompat-v7:${lib.support_lib_version}"
     androidTestImplementation "com.android.support.test:runner:${lib.test_runner_version}"
 }
+
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = 'werbhelius'
+    groupId = 'com.werb.floatwindow'
+    artifactId = 'floatwindow'
+    publishVersion = versions.versionCode
+    desc = 'Android float window in activity'
+    website = 'https://github.com/Werb/AndroidFloatWindow'
+}
