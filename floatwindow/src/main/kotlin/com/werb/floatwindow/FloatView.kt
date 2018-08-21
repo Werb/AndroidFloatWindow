@@ -44,4 +44,6 @@ interface FloatView {
 
     fun setFilterActivity(filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>>)
 
+    fun attachToEdge(attach: Boolean)
+
 }

@@ -15,7 +15,8 @@ internal data class FloatData(var view: View? = null,
                               var gravity: Int? = null,
                               var tag: String = float_default_tag,
                               var autoShow: Boolean = false,
-                              var filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>> = mutableMapOf()) {
+                              var filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>> = mutableMapOf(),
+                              var attach: Boolean = true) {
 
     companion object {
         const val float_default_tag = "float_window_tag"

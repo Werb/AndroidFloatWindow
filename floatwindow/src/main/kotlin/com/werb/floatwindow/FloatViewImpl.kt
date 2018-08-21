@@ -26,6 +26,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     private var floatPosition = FloatPosition.BOTTOM_START
     private var tag = FloatData.float_default_tag
     private var filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>> = mutableMapOf()
+    private var attachToEdge = true
 
     /** touch config */
     private var mX: Int = 0
@@ -71,6 +72,10 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun setFilterActivity(filterActivities: MutableMap<Boolean, Array<out Class<out Activity>>>) {
         this.filterActivities = filterActivities
+    }
+
+    override fun attachToEdge(attach: Boolean) {
+        attachToEdge = attach
     }
 
     override fun setGravity(gravity: Int) {
@@ -255,6 +260,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     private fun eventUp(event: MotionEvent) {
         // adsorb in left or right
+        if (!attachToEdge) return
         val startX = mX
         val endX = if (startX * 2 + floatView.width > context.widthPixels)
             context.widthPixels - floatView.width

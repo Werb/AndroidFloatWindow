@@ -97,6 +97,11 @@ object FloatWindow {
             return this
         }
 
+        fun attachToEdge(attach: Boolean): Builder {
+            floatData.attach = attach
+            return this
+        }
+
         fun build(): View {
             if (floatData.view == null) {
                 throw IllegalArgumentException("View has not been set!")
@@ -115,6 +120,7 @@ object FloatWindow {
                 this.setGravity(floatData.gravity ?: Gravity.BOTTOM or Gravity.START)
                 this.setOffset(floatData.xOffset, floatData.yOffset)
                 this.setFilterActivity(floatData.filterActivities)
+                this.attachToEdge(floatData.attach)
                 this.addMoveListener { tag, x, y ->
                     float_xy_map[tag]?.apply {
                         this.x = x
