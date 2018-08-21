@@ -16,9 +16,11 @@ import com.werb.floatwindow.*
 @SuppressLint("Registered")
 open class BaseActivity : AppCompatActivity() {
 
+    private val rotateView: RotateView by lazy { RotateView(this) }
+
     private val floatView: View by lazy {
         FloatWindow.Builder(this)
-            .setView(RotateView(this))
+            .setView(rotateView)
             .setSize(200, 200)
             .setOffset(0, 0)
             .setGravity(Gravity.BOTTOM or Gravity.END)
@@ -39,7 +41,7 @@ open class BaseActivity : AppCompatActivity() {
             .setSize(200, 200)
             .setOffset(0, 0)
             .setGravity(Gravity.TOP or Gravity.START)
-            .setTag("111")
+            .setTag("floatView2")
             .setAutoShow(true)
             .setMoveListener { x, y ->
                 println("floatView2:$x----$y")
@@ -49,7 +51,31 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        lifecycle.addObserver(FloatWindowObserver(this, floatView))
+        lifecycle.addObserver(FloatWindowObserver(this, floatView, floatView2, showBlock = this::floatShow, dismissBlock = this::floatDismiss))
+    }
+
+    /** when floatView is show when Activity ON_RESUME we can do something */
+    private fun floatShow(tag: String) {
+        when(tag) {
+            "floatView2" -> {
+                println("------- floatView2 is show --------")
+            }
+            else -> {
+                println("------- floatView1 is show --------")
+            }
+        }
+    }
+
+    /** when floatView is dismiss when Activity ON_RESUME we can do something */
+    private fun floatDismiss(tag: String) {
+        when(tag) {
+            "floatView2" -> {
+                println("------- floatView2 is dismiss now --------")
+            }
+            else -> {
+                println("------- floatView1 is dismiss now --------")
+            }
+        }
     }
 
 }

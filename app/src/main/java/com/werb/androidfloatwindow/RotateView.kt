@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.layout_rotate_view.view.*
 /**
  * Created by wanbo on 2018/8/19.
  */
-class RotateView: FrameLayout {
+class RotateView : FrameLayout {
 
     constructor(context: Context?) : this(context, null)
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -22,16 +22,23 @@ class RotateView: FrameLayout {
         initUI()
     }
 
-    private fun initUI(){
+    private fun initUI() {
         LayoutInflater.from(context).inflate(R.layout.layout_rotate_view, this)
         jay.apply {
-            this.startAnimation(AnimationUtils.loadAnimation(context, R.anim.rotate).also {
-                it.interpolator = LinearInterpolator()
-            })
             this.setOnClickListener {
                 Toast.makeText(context, "RotateView click", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    fun startAnimation() {
+        jay.startAnimation(AnimationUtils.loadAnimation(context, R.anim.rotate).also {
+            it.interpolator = LinearInterpolator()
+        })
+    }
+
+    fun stopAnimation() {
+        jay.clearAnimation()
     }
 
 }

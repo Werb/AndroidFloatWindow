@@ -48,6 +48,11 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     constructor(context: Context?, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
+    override fun hasAddFloatView(): Boolean {
+        val index = indexOfChild(floatView)
+        return index >= 0
+    }
+
     override fun setFloatTag(tag: String) {
         this.tag = tag
         this.id = tag.hashCode()
@@ -153,7 +158,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     }
 
     private fun showFloat() {
-        if (childCount == 0) {
+        if (!hasAddFloatView()) {
             initUI()
         }
         // sync position

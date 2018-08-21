@@ -9,7 +9,10 @@ import android.view.View
 /**
  * Created by wanbo on 2018/8/13.
  */
-class FloatWindowObserver(private val activity: Activity, private vararg val views: View) : LifecycleObserver {
+class FloatWindowObserver(private val activity: Activity,
+                          private vararg val views: View,
+                          private val showBlock: (tag: String) -> Unit = {},
+                          private val dismissBlock: (tag: String) -> Unit = {}) : LifecycleObserver {
 
     init {
         val set = HashSet<String>()
@@ -38,11 +41,15 @@ class FloatWindowObserver(private val activity: Activity, private vararg val vie
             if (view is FloatViewImpl) {
                 FloatWindow.float_show_map[view.getFloatTag()]?.let {
                     if (it.show) {
+                        showBlock(view.getFloatTag())
                         view.show()
                     } else {
-                        view.dismiss()
-                        if (it.destroy) {
-                            view.destroy()
+                        if (view.hasAddFloatView()) {
+                            dismissBlock(view.getFloatTag())
+                            view.dismiss()
+                            if (it.destroy) {
+                                view.destroy()
+                            }
                         }
                     }
                 }

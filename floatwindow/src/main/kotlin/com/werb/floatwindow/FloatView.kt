@@ -10,6 +10,8 @@ import android.view.View
 
 interface FloatView {
 
+    fun hasAddFloatView(): Boolean
+
     fun setFloatTag(tag: String)
 
     fun getFloatTag(): String
