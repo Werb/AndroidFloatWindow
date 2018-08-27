@@ -18,8 +18,8 @@ buildscript {
     // app version
     ext.versions = [
             applicationId    : "com.werb.androidfloatwindow",
-            versionCode      : 1,
-            versionName      : "0.1.0",
+            versionCode      : 2,
+            versionName      : "0.1.1",
             minSdkVersion    : 19,
             targetSdkVersion : 28,
             compileSdkVersion: 28,
