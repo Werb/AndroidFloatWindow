@@ -36,7 +36,7 @@ publish {
     userOrg = 'werbhelius'
     groupId = 'com.werb.floatwindow'
     artifactId = 'floatwindow'
-    publishVersion = versions.versionCode
+    publishVersion = versions.versionName
     desc = 'Android float window in activity'
     website = 'https://github.com/Werb/AndroidFloatWindow'
 }
