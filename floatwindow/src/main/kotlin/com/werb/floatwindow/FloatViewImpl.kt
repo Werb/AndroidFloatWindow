@@ -109,9 +109,11 @@ internal class FloatViewImpl : FrameLayout, FloatView {
 
     override fun initUI() {
         // add view in parent
-        addView(floatView, floatLayoutParams)
-        floatLayoutParams.gravity = gravity
-        floatView.visibility = View.GONE
+        if (!hasAddFloatView()) {
+            addView(floatView, floatLayoutParams)
+            floatLayoutParams.gravity = gravity
+            floatView.visibility = View.GONE
+        }
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent?): Boolean {
@@ -158,9 +160,7 @@ internal class FloatViewImpl : FrameLayout, FloatView {
     }
 
     private fun showFloat() {
-        if (!hasAddFloatView()) {
-            initUI()
-        }
+        initUI()
         // sync position
         FloatWindow.float_xy_map[tag]?.apply {
             updateOffset(this.x, this.y)
