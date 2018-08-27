@@ -17,6 +17,17 @@ object FloatWindow {
     internal val float_show_map = mutableMapOf<String, FloatShow>()
     internal val float_data_map = mutableMapOf<String, FloatData>()
 
+    /** add view not display */
+    fun add(activity: Activity, tag: String = FloatData.float_default_tag) {
+        val act = WeakReference<Activity>(activity).get()
+        act?.apply {
+            val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
+            floatViewImpl?.initUI()
+            float_show_map[tag] = FloatShow(true, false)
+        }
+    }
+
+    /** add view and display */
     fun show(activity: Activity, tag: String = FloatData.float_default_tag) {
         val act = WeakReference<Activity>(activity).get()
         act?.apply {
@@ -26,6 +37,7 @@ object FloatWindow {
         }
     }
 
+    /** dismiss view */
     fun dismiss(activity: Activity, tag: String = FloatData.float_default_tag) {
         val act = WeakReference<Activity>(activity).get()
         act?.apply {
@@ -35,6 +47,7 @@ object FloatWindow {
         }
     }
 
+    /** destroy view */
     fun destroy(activity: Activity, tag: String = FloatData.float_default_tag) {
         val act = WeakReference<Activity>(activity).get()
         act?.apply {
