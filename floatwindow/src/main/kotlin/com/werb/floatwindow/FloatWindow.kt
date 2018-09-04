@@ -33,7 +33,6 @@ object FloatWindow {
         act?.apply {
             val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
             floatViewImpl?.show()
-            float_show_map[tag] = FloatShow(true, false)
         }
     }
 
@@ -43,7 +42,6 @@ object FloatWindow {
         act?.apply {
             val floatViewImpl = this.findViewById(tag.hashCode()) as? FloatViewImpl
             floatViewImpl?.dismiss()
-            float_show_map[tag] = FloatShow(false, false)
         }
     }
 
