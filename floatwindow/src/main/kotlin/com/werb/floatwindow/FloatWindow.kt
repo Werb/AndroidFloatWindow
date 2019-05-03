@@ -58,17 +58,12 @@ object FloatWindow {
         }
     }
 
-    class Builder(private val activity: Activity) {
+    class Builder(private val context: Context) {
 
         private val floatData: FloatData = FloatData()
 
         fun setView(view: View): Builder {
             floatData.view = view
-            return this
-        }
-
-        fun setView(layoutId: Int): Builder {
-            floatData.view = LayoutInflater.from(activity).inflate(layoutId, null)
             return this
         }
 
@@ -125,7 +120,7 @@ object FloatWindow {
                 float_show_map[floatData.tag] = FloatShow(floatData.autoShow, false)
             }
 
-            return FloatViewImpl(activity).apply {
+            return FloatViewImpl(context).apply {
                 this.setFloatTag(floatData.tag)
                 this.setView(floatData.view ?: return@apply)
                 this.setSize(floatData.width, floatData.height)
